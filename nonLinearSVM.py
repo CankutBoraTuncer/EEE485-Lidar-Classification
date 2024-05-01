@@ -3,8 +3,7 @@ from scipy import optimize
 
 
 class KernelSvmClassifier:
-    def __init__(self, C, kernel):
-        self.C = C
+    def __init__(self, kernel):
         self.kernel = kernel
         self.alpha = None
         self.supportVectors = None
@@ -24,7 +23,7 @@ class KernelSvmClassifier:
 
         # Constraints
         A = np.vstack((-np.eye(N), np.eye(N)))
-        b = np.hstack((np.zeros(N), self.C * np.ones(N)))
+        b = np.hstack((np.zeros(N),  np.ones(N)))
         constraints = ({'type': 'eq', 'fun': lambda a: np.dot(a, y), 'jac': lambda a: y},
                        {'type': 'ineq', 'fun': lambda a: b - np.dot(A, a), 'jac': lambda a: -A})
 
@@ -50,9 +49,8 @@ class KernelSvmClassifier:
         return 2 * (d > 0) - 1
 
 class MultiClassSVM:
-    def __init__(self, C, kernel):
+    def __init__(self, kernel):
         self.classifiers = {}
-        self.C = C
         self.kernel = kernel
         self.svm = None
     
@@ -60,7 +58,7 @@ class MultiClassSVM:
         self.classes_ = np.unique(y)
         for cls in self.classes_:
             y_binary = np.where(y == cls, 1, -1)
-            self.svm = KernelSvmClassifier(self.C, self.kernel)
+            self.svm = KernelSvmClassifier(self.kernel)
             self.svm.fit(X, y_binary)
             self.classifiers[cls] = self.svm
 
