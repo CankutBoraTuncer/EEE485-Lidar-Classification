@@ -2,7 +2,6 @@ import numpy as np
 from TreeBranch import TreeBranch
 
 class DecisionTree():
-
     def __init__(self, data, tree_depth):
         self.data         = data
         self.max_depth    = tree_depth
